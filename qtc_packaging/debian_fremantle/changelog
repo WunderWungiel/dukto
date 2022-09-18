@@ -1,0 +1,6 @@
+dukto (0.0.1) unstable; urgency=low
+
+  * Initial Release.
+  * Removed "Or simply drag files here" function from sending window, it's useless
+
+ -- Wunder Wungiel <dredlok706@yandex.com>  Sat, 17 Sep 2022 18:44:01 +0200

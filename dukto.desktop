@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Version=1.0
+Type=Application
+Name=Dukto
+Comment=Easy and multi-platform file transfer tool
+Exec=/opt/dukto/bin/dukto
+Icon=dukto
+X-HildonDesk-ShowInToolbar=true
+X-Osso-Type=application/x-executable
