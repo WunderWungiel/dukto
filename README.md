@@ -1,2 +1,2 @@
-# dukto
- Dukto R5 (Maemo builds)
+# Dukto
+ Dukto R5 builds for Nokia N900 (Maemo 5)
