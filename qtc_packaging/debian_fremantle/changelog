@@ -1,3 +1,8 @@
+dukto (0.0.2) unstable; urgency=low
+  * About page and toolbar changes
+
+ -- Wunder Wungiel <dredlok706@yandex.com>  Mon, 19 Sep 2022 19:58:33 +0200
+
 dukto (0.0.1) unstable; urgency=low
 
   * Initial Release.
