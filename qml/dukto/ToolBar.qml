@@ -49,28 +49,7 @@ Item {
             source: "PanelGradient.png"
         }
 
-        Image {
-            id: openFolderIcon
-            anchors.top: parent.top
-            anchors.topMargin: 5
-            anchors.right: showIpIcon.left
-            anchors.rightMargin: 40
-            source: "OpenFolderIcon.png"
 
-            MouseArea {
-                anchors.fill: parent
-                onClicked: guiBehind.openDestinationFolder();
-            }
-        }
-        SText {
-            anchors.top: openFolderIcon.bottom
-            anchors.topMargin: 3
-            anchors.horizontalCenter: openFolderIcon.horizontalCenter
-            text: "Received"
-            font.pixelSize: 12
-            horizontalAlignment: Text.AlignHCenter
-            width: 1
-        }
 
         Image {
             id: showIpIcon
@@ -98,27 +77,28 @@ Item {
         }
 
         Image {
-            id: configIcon
-            anchors.top: parent.top
-            anchors.topMargin: 5
-            anchors.left: showIpIcon.right
-            anchors.leftMargin: 40
-            source: "ConfigIcon.png"
+                    id: configIcon
+                    anchors.top: parent.top
+                    anchors.topMargin: 5
+                    anchors.left: showIpIcon.right
+                    anchors.leftMargin: 40
+                    source: "ConfigIcon.png"
 
-            MouseArea {
-                anchors.fill: parent
-                onClicked: toolBar.clicked("settings")
-            }
-        }
-        SText {
-            anchors.top: configIcon.bottom
-            anchors.topMargin: 3
-            anchors.horizontalCenter: configIcon.horizontalCenter
-            text: "Settings"
-            font.pixelSize: 12
-            horizontalAlignment: Text.AlignHCenter
-            width: 1
-        }
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: toolBar.clicked("settings")
+                    }
+                }
+                SText {
+                    anchors.top: configIcon.bottom
+                    anchors.topMargin: 3
+                    anchors.horizontalCenter: configIcon.horizontalCenter
+                    text: "Settings"
+                    font.pixelSize: 12
+                    horizontalAlignment: Text.AlignHCenter
+                    width: 1
+                }
+
 
         Image {
             id: moreIcon

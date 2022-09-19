@@ -22,7 +22,7 @@ Item {
 
     Rectangle {
         x: 27
-        y: 15
+        y: 5
         width: 64
         height: 64
         color: theme.color2
@@ -37,7 +37,7 @@ Item {
     }
 
     SmoothText {
-        y: 80
+        y: 70
         x: 22
         font.pixelSize: 100
         text: "Dukto R5"
@@ -45,30 +45,56 @@ Item {
     }
     SmoothText {
         x: 25
-        y: 70 + 75
+        y: 60 + 75
         font.pixelSize: 38
         text: "Created by Emanuele Colombo"
         color: theme.color5
     }
     SmoothText {
         x: 25
-        y: 100 + 75
+        y: 90 + 75
         font.pixelSize: 32
-        text: "Website: <a href=\"http://www.msec.it/dukto/\">http://www.msec.it/dukto/</a>"
+        text: "Website: <a href=\"http://www.msec.it/blog/dukto/\">http://www.msec.it/blog/dukto/</a>"
         onLinkActivated: Qt.openUrlExternally(link)
         color: theme.color5
     }
+    SmoothText {
+        x: 25
+        y: 115 + 75
+        font.pixelSize: 38
+        text: "Maemo build by <a href=\"https://wunderwungiel.t.me\">Wunder Wungiel</a>."
+        onLinkActivated: Qt.openUrlExternally(link)
+        color: theme.color5
+    }
+    SmoothText {
+        x: 25
+        y: 145 + 75
+        font.pixelSize: 32
+        text: "I am not author of this app, I only develop it for Maemo."
+        onLinkActivated: Qt.openUrlExternally(link)
+        color: theme.color5
+    }
+
+    SmoothText {
+        x: 25
+        y: 165 + 75
+        font.pixelSize: 32
+        text: "However, if you want, you can <a href=\"https://www.buymeacoffee.com/wunderwungiel\">donate</a>, what motivates me :)"
+        onLinkActivated: Qt.openUrlExternally(link)
+        color: theme.color5
+    }
+
 
     SText {
         anchors.right: parent.right
         anchors.rightMargin: 40
         anchors.left: parent.left
         anchors.leftMargin: 25
-        y: 240
-        font.pixelSize: 12
+        y: 265
+        font.pixelSize: 10
         color: theme.color5
         wrapMode: "WordWrap"
-        text: "This application and it's source code are released freely as open source project.<br>If you like this application please consider <a href=\"http://www.msec.it/\">making a donation</a>."
+        text: "This application and it's source code are released freely as open source project."
         onLinkActivated: Qt.openUrlExternally(link)
     }
 }
