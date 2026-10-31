@@ -16,36 +16,37 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <QtGui/QApplication>
-#include "qmlapplicationviewer.h"
+#include <QApplication>
+#include <QDir>
+#include <QWindow>
 
 #include "guibehind.h"
 #include "duktowindow.h"
-
-
-
-#include "qtsingleapplication.h"
+#include "singleinstance.h"
 
 int main(int argc, char *argv[])
 {
-#if defined(Q_OS_LINUX)
-    QApplication::setGraphicsSystem("raster");
-#elif defined (Q_OS_WIN)
-    qputenv("QML_ENABLE_TEXT_IMAGE_CACHE", "true");
-#endif
+    QApplication app(argc, argv);
+    app.setOrganizationName("msec.it");
+    app.setApplicationName("Dukto");
 
-    // Check for single running instance    
-    QtSingleApplication app(argc, argv);
-    if (app.isRunning()) {
-        app.sendMessage("FOREGROUND");
+    // Check for single running instance
+    SingleInstance instance("dukto-" + QDir::home().dirName());
+    if (instance.isRunning()) {
+        instance.sendMessage("FOREGROUND");
         return 0;
     }
 
     DuktoWindow viewer;
-    app.setActivationWindow(&viewer, true);
+    QObject::connect(&instance, &SingleInstance::messageReceived, &viewer, [&viewer]() {
+        viewer.show();
+        viewer.setWindowStates(viewer.windowStates() & ~Qt::WindowMinimized);
+        viewer.raise();
+        viewer.requestActivate();
+    });
     GuiBehind gb(&viewer);
 
-    viewer.showExpanded();
+    viewer.show();
     app.installEventFilter(&gb);
 
     return app.exec();

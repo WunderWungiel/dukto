@@ -46,7 +46,7 @@ void EcWin7::init(WId wid)
 // Windows event handler callback function
 // (handles taskbar communication initial message)
 #ifdef Q_OS_WIN
-bool EcWin7::winEvent(MSG * message, long * result)
+bool EcWin7::winEvent(MSG * message, qintptr * result)
 {
     if (message->message == mTaskbarMessageId)
     {
@@ -67,7 +67,7 @@ void EcWin7::setProgressValue(int value, int max)
 {
 #ifdef Q_OS_WIN
     if (!mTaskbar) return;
-    mTaskbar->SetProgressValue(mWindowId, value, max);
+    mTaskbar->SetProgressValue(reinterpret_cast<HWND>(mWindowId), value, max);
 #endif
 }
 
@@ -76,7 +76,7 @@ void EcWin7::setProgressState(ToolBarProgressState state)
 {
 #ifdef Q_OS_WIN
     if (!mTaskbar) return;
-    mTaskbar->SetProgressState(mWindowId, (TBPFLAG)state);
+    mTaskbar->SetProgressState(reinterpret_cast<HWND>(mWindowId), (TBPFLAG)state);
 #endif
 }
 
@@ -90,7 +90,7 @@ void EcWin7::setOverlayIcon(QString iconName, QString description)
     if (mOverlayIcon != NULL) oldIcon = mOverlayIcon;
     if (iconName == "")
     {
-        mTaskbar->SetOverlayIcon(mWindowId, NULL, NULL);
+        mTaskbar->SetOverlayIcon(reinterpret_cast<HWND>(mWindowId), NULL, NULL);
         mOverlayIcon = NULL;
     }
     else
@@ -101,7 +101,7 @@ void EcWin7::setOverlayIcon(QString iconName, QString description)
                                  0,
                                  0,
                                  NULL);
-        mTaskbar->SetOverlayIcon(mWindowId, mOverlayIcon, description.toStdWString().c_str());
+        mTaskbar->SetOverlayIcon(reinterpret_cast<HWND>(mWindowId), mOverlayIcon, description.toStdWString().c_str());
     }
     if ((oldIcon != NULL) && (oldIcon != mOverlayIcon))
     {

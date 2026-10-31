@@ -19,7 +19,7 @@
 #include "buddylistitemmodel.h"
 
 #include <QUrl>
-#include <QRegExp>
+#include <QRegularExpression>
 
 #include "platform.h"
 #include "peer.h"
@@ -37,7 +37,7 @@ BuddyListItemModel::BuddyListItemModel() :
     roleNames[Avatar] = "avatar";
     roleNames[OsLogo] = "oslogo";
     roleNames[ShowBack] = "showback";
-    setRoleNames(roleNames);
+    setItemRoleNames(roleNames);
 }
 
 void BuddyListItemModel::addMeElement()
@@ -125,9 +125,8 @@ void BuddyListItemModel::addBuddy(QString ip, qint16 port, QString username, QSt
 
 void BuddyListItemModel::addBuddy(Peer &peer)
 {
-    QRegExp rx("^(.*)\\sat\\s(.*)\\s\\((.*)\\)$");
-    rx.indexIn(peer.name);
-    QStringList data = rx.capturedTexts();
+    QRegularExpression rx("^(.*)\\sat\\s(.*)\\s\\((.*)\\)$");
+    QStringList data = rx.match(peer.name).capturedTexts();
 
     QString username = data[1];
     QString system = data[2];

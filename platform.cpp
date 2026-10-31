@@ -22,6 +22,9 @@
 #include <QHostInfo>
 #include <QFile>
 #include <QDir>
+#include <QRegularExpression>
+#include <QTextStream>
+#include <QDebug>
 #include <QMessageBox>
 
 #if defined(Q_OS_MACOS)
@@ -189,9 +192,10 @@ QString Platform::getLinuxAvatarPath()
         line = ts.readLine();
         if (line.isNull()) break;
         if (line.startsWith("Icon=")) {
-            QRegExp re("^Icon=(.*)$");
-            if (re.indexIn(line) == -1) continue;
-            QStringList pathlist = re.capturedTexts();
+            QRegularExpression re("^Icon=(.*)$");
+            QRegularExpressionMatch match = re.match(line);
+            if (!match.hasMatch()) continue;
+            QStringList pathlist = match.capturedTexts();
             path = pathlist[1];
             found = true;
             break;
@@ -222,7 +226,7 @@ QString Platform::getMacTempAvatarPath()
             CFDataRef data = CSIdentityGetImageData(userId);
             qDebug() << CFDataGetLength(data);
             qdata.resize(CFDataGetLength(data));
-            CFDataGetBytes(data, CFRangeMake(0, CFDataGetLength(data)), (uint8*)qdata.data());
+            CFDataGetBytes(data, CFRangeMake(0, CFDataGetLength(data)), (uchar*)qdata.data());
         }
     }
     CFRelease(query);

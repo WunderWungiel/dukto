@@ -105,7 +105,7 @@ void DuktoProtocol::sayHello(QHostAddress dest, qint16 port)
             packet->append(0x05);           // 0x05 -> HELLO MESSAGE (unicast) with PORT
         packet->append((char*)&mLocalUdpPort, sizeof(qint16));
     }
-    packet->append(getSystemSignature());
+    packet->append(getSystemSignature().toUtf8());
 
     // Invio pacchetto
     if (dest == QHostAddress::Broadcast) {
@@ -765,7 +765,7 @@ QByteArray DuktoProtocol::nextElementHeader()
 
     // Verifico se si tratta di un invio testo
     if (fullname == "___DUKTO___TEXT___") {
-        header.append(fullname.toAscii() + '\0');
+        header.append(fullname.toLatin1() + '\0');
         qint64 size = mTextToSend.toUtf8().length();
         header.append((char*) &size, sizeof(size));
         return header;

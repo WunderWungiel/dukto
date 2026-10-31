@@ -19,6 +19,8 @@
 #include "miniwebserver.h"
 
 #include <QTcpSocket>
+#include <QRegularExpression>
+#include <QTextStream>
 #include <QStringList>
 #include <QDateTime>
 #include <QFile>
@@ -44,7 +46,7 @@ MiniWebServer::MiniWebServer(int port)
     }
 }
 
-void MiniWebServer::incomingConnection(int handle)
+void MiniWebServer::incomingConnection(qintptr handle)
 {
     QTcpSocket* s = new QTcpSocket(this);
     connect(s, SIGNAL(readyRead()), this, SLOT(readClient()));
@@ -56,7 +58,7 @@ void MiniWebServer::readClient()
 {
     QTcpSocket* socket = (QTcpSocket*)sender();
     if (socket->canReadLine()) {
-        QStringList tokens = QString(socket->readLine()).split(QRegExp("[ \r\n][ \r\n]*"));
+        QStringList tokens = QString(socket->readLine()).split(QRegularExpression("[ \r\n][ \r\n]*"));
         if (tokens[0] == "GET") {
 
             QTextStream os(socket);

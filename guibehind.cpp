@@ -25,20 +25,21 @@
 #include "updateschecker.h"
 
 #include <QHash>
-#include <QDeclarativeView>
-#include <QDeclarativeContext>
+#include <QQuickView>
+#include <QQmlContext>
 #include <QTimer>
 #include <QDesktopServices>
 #include <QDir>
 #include <QFileDialog>
 #include <QClipboard>
 #include <QApplication>
-#include <QDeclarativeProperty>
-#include <QGraphicsObject>
-#include <QRegExp>
+#include <QRegularExpression>
+#include <QRandomGenerator>
+#include <QScreen>
+#include <QPixmap>
 #include <QThread>
 #include <QTemporaryFile>
-#include <QDesktopWidget>
+#include <QGuiApplication>
 
 
 
@@ -117,12 +118,11 @@ GuiBehind::GuiBehind(DuktoWindow* view) :
     // Load GUI
     view->setSource(QUrl("qrc:/qml/dukto/Dukto.qml"));
     //view->setSource(QUrl::fromLocalFile("c:/users/emanuele/documenti/dukto/qml/dukto/Dukto.qml"));
-    view->restoreGeometry(mSettings->windowGeometry());
+    view->restoreWindowGeometry(mSettings->windowGeometry());
 
     // Start random rotate
     mShowBackTimer = new QTimer(this);
     connect(mShowBackTimer, SIGNAL(timeout()), this, SLOT(showRandomBack()));
-    qsrand(QDateTime::currentDateTime().toTime_t());;
     mShowBackTimer->start(10000);
 
     // Enqueue check for updates
@@ -176,7 +176,7 @@ void GuiBehind::peerListRemoved(Peer peer) {
 void GuiBehind::showRandomBack()
 {
     // Look for a random element
-    int i = (qrand() * 1.0 / RAND_MAX) * (mBuddiesList.rowCount() + 1);
+    int i = QRandomGenerator::global()->bounded(mBuddiesList.rowCount() + 1);
 
     // Show back
     if (i < mBuddiesList.rowCount()) mBuddiesList.showSingleBack(i);
@@ -232,7 +232,7 @@ void GuiBehind::receiveFileComplete(QStringList *files, qint64 totalSize) {
 
     // Update GUI
     mView->win7()->setProgressState(EcWin7::NoProgress);
-    QApplication::alert(mView, 5000);
+    mView->alert(5000);
     emit receiveCompleted();
 }
 
@@ -243,7 +243,7 @@ void GuiBehind::receiveTextComplete(QString *text, qint64 totalSize)
 
     // Update GUI
     mView->win7()->setProgressState(EcWin7::NoProgress);
-    QApplication::alert(mView, 5000);
+    mView->alert(5000);
     emit receiveCompleted();
 }
 
@@ -268,7 +268,7 @@ void GuiBehind::openDestinationFolder()
 void GuiBehind::changeDestinationFolder()
 {
     // Show system dialog for folder selection
-    QString dirname = QFileDialog::getExistingDirectory(mView, "Change folder", ".",
+    QString dirname = QFileDialog::getExistingDirectory(nullptr, "Change folder", ".",
         QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
     if (dirname == "") return;
 
@@ -330,7 +330,7 @@ void GuiBehind::sendDroppedFiles(QStringList *files)
 void GuiBehind::sendSomeFiles()
 {
     // Show file selection dialog
-    QStringList files = QFileDialog::getOpenFileNames(mView, "Send some files");
+    QStringList files = QFileDialog::getOpenFileNames(nullptr, "Send some files");
     if (files.count() == 0) return;
 
     // Send files
@@ -341,7 +341,7 @@ void GuiBehind::sendSomeFiles()
 void GuiBehind::sendFolder()
 {
     // Show folder selection dialog
-    QString dirname = QFileDialog::getExistingDirectory(mView, "Change folder", ".",
+    QString dirname = QFileDialog::getExistingDirectory(nullptr, "Change folder", ".",
         QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
     if (dirname == "") return;
 
@@ -374,7 +374,7 @@ void GuiBehind::sendText()
 void GuiBehind::sendScreen()
 {
     // Minimize window
-    mView->setWindowState(Qt::WindowMinimized);
+    mView->showMinimized();
 
     QTimer::singleShot(500, this, SLOT(sendScreenStage2()));
 }
@@ -382,10 +382,11 @@ void GuiBehind::sendScreen()
 void GuiBehind::sendScreenStage2() {
 
     // Screenshot
-    QPixmap screen = QPixmap::grabWindow(QApplication::desktop()->winId());
+    QPixmap screen = QGuiApplication::primaryScreen()->grabWindow(0);
 
     // Restore window
-    mView->setWindowState(Qt::WindowActive);
+    mView->showNormal();
+    mView->requestActivate();
 
     // Salvataggio screenshot in file
     QTemporaryFile tempFile;
@@ -438,8 +439,8 @@ bool GuiBehind::prepareStartTransfer(QString *ip, qint16 *port)
         if (dest.contains(":")) {
 
             // Port is specified or destination is malformed...
-            QRegExp rx("^(.*):([0-9]+)$");
-            if (rx.indexIn(dest) == -1) {
+            QRegularExpressionMatch rxMatch = QRegularExpression("^(.*):([0-9]+)$").match(dest);
+            if (!rxMatch.hasMatch()) {
 
                 // Malformed destination
                 setMessagePageTitle("Send");
@@ -450,7 +451,7 @@ bool GuiBehind::prepareStartTransfer(QString *ip, qint16 *port)
             }
 
             // Get IP (or hostname) and port
-             QStringList capt = rx.capturedTexts();
+             QStringList capt = rxMatch.capturedTexts();
              *ip = capt[1];
              *port = capt[2].toInt();
         }

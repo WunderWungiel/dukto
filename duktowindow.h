@@ -15,39 +15,34 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
- 
+
 #ifndef DUKTOWINDOW_H
 #define DUKTOWINDOW_H
 
-#include "qmlapplicationviewer/qmlapplicationviewer.h"
+#include <QQuickView>
 #include "ecwin7.h"
 
 class GuiBehind;
 
-class DuktoWindow : public QmlApplicationViewer
+class DuktoWindow : public QQuickView
 {
     Q_OBJECT
 
 public:
-    explicit DuktoWindow(QWidget *parent = 0);
+    explicit DuktoWindow(QWindow *parent = nullptr);
     void setGuiBehindReference(GuiBehind* ref);
     inline EcWin7* win7() { return &mWin7; }
+    void restoreWindowGeometry(const QRect &geometry);
 
 protected:
+    bool event(QEvent *event) override;
 #ifdef Q_OS_WIN
-    bool winEvent(MSG * message, long * result);
+    bool nativeEvent(const QByteArray &eventType, void *message, qintptr *result) override;
 #endif
-    void dragEnterEvent(QDragEnterEvent *event);
-    void dragMoveEvent(QDragMoveEvent *event);
-    void dragLeaveEvent(QDragLeaveEvent *event);
-    void dropEvent(QDropEvent *event);
-    void closeEvent(QCloseEvent *event);
-
-signals:
-
-public slots:
 
 private:
+    void dropEvent(QDropEvent *event);
+
     GuiBehind *mGuiBehind;
     EcWin7 mWin7;
 };

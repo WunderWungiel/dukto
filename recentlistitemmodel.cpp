@@ -31,7 +31,7 @@ RecentListItemModel::RecentListItemModel() :
     roleNames[DateTime] = "dateTime";
     roleNames[Sender] = "sender";
     roleNames[Size] = "size";
-    setRoleNames(roleNames);
+    setItemRoleNames(roleNames);
 }
 
 void RecentListItemModel::addRecent(QString name, QString value, QString type, QString sender, qint64 size)
@@ -40,7 +40,7 @@ void RecentListItemModel::addRecent(QString name, QString value, QString type, Q
 
     // Format timestamp
     QDateTime now = QDateTime::currentDateTime();
-    QString datetime = now.toString(Qt::SystemLocaleShortDate);
+    QString datetime = QLocale::system().toString(now, QLocale::ShortFormat);
 
     // Convert size data
     QString sizeFormatted;

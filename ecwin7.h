@@ -21,7 +21,7 @@
 #define ECWIN7_H
 
 #include <QtGlobal>
-#include <QWidget>
+#include <QWindow>
 
 // Windows only data definitions
 #ifdef Q_OS_WIN
@@ -116,7 +116,7 @@ public:
     EcWin7();
     void init(WId wid);
 #ifdef Q_OS_WIN
-    bool winEvent(MSG * message, long * result);
+    bool winEvent(MSG * message, qintptr * result);
 #endif
 	// Overlay icon handling
 	void setOverlayIcon(QString iconName, QString description);
