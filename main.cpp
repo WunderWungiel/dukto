@@ -22,50 +22,31 @@
 #include "guibehind.h"
 #include "duktowindow.h"
 
-#if defined(Q_WS_S60)
-#define SYMBIAN
-#endif
 
-#if defined(Q_WS_SIMULATOR)
-#define SYMBIAN
-#endif
 
-#ifndef SYMBIAN
 #include "qtsingleapplication.h"
-#endif
 
 int main(int argc, char *argv[])
 {
-#if defined(Q_WS_X11)
+#if defined(Q_OS_LINUX)
     QApplication::setGraphicsSystem("raster");
-#elif defined (Q_WS_WIN)
+#elif defined (Q_OS_WIN)
     qputenv("QML_ENABLE_TEXT_IMAGE_CACHE", "true");
 #endif
 
-#if defined(SYMBIAN)
-    QApplication app(argc, argv);
-#else
     // Check for single running instance    
     QtSingleApplication app(argc, argv);
     if (app.isRunning()) {
         app.sendMessage("FOREGROUND");
         return 0;
     }
-#endif
 
     DuktoWindow viewer;
-#ifndef SYMBIAN
     app.setActivationWindow(&viewer, true);
-#endif
     GuiBehind gb(&viewer);
 
-#ifndef Q_WS_S60
     viewer.showExpanded();
     app.installEventFilter(&gb);
-#else
-    viewer.showFullScreen();
-    gb.initConnection();
-#endif
 
     return app.exec();
 }

@@ -39,19 +39,8 @@
 #include <QThread>
 #include <QTemporaryFile>
 #include <QDesktopWidget>
-#if defined(Q_WS_S60)
-#define SYMBIAN
-#endif
 
-#if defined(Q_WS_SIMULATOR)
-#define SYMBIAN
-#endif
 
-#ifdef SYMBIAN
-#include <QNetworkConfigurationManager>
-#include <QNetworkConfiguration>
-#include <QMessageBox>
-#endif
 
 #define NETWORK_PORT 4644 // 6742
 
@@ -128,9 +117,7 @@ GuiBehind::GuiBehind(DuktoWindow* view) :
     // Load GUI
     view->setSource(QUrl("qrc:/qml/dukto/Dukto.qml"));
     //view->setSource(QUrl::fromLocalFile("c:/users/emanuele/documenti/dukto/qml/dukto/Dukto.qml"));
-#ifndef Q_WS_S60
     view->restoreGeometry(mSettings->windowGeometry());
-#endif
 
     // Start random rotate
     mShowBackTimer = new QTimer(this);
@@ -285,17 +272,6 @@ void GuiBehind::changeDestinationFolder()
         QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
     if (dirname == "") return;
 
-#ifdef SYMBIAN
-    // Disable saving on C:
-    if (dirname.toUpper().startsWith("C:")) {
-
-        setMessagePageTitle("Destination");
-        setMessagePageText("Receiving data on C: is disabled for security reasons. Please select another destination folder.");
-        setMessagePageBackState("settings");
-        emit gotoMessagePage();
-        return;
-    }
-#endif
 
     // Set the new folder as current
     QDir::setCurrent(dirname);
@@ -379,17 +355,7 @@ void GuiBehind::sendClipboardText()
 {
     // Get text to send
     QString text = mClipboard->text();
-#ifndef Q_WS_S60
     if (text == "") return;
-#else
-    if (text == "") {
-        setMessagePageTitle("Send");
-        setMessagePageText("No text appears to be in the clipboard right now!");
-        setMessagePageBackState("send");
-        emit gotoMessagePage();
-        return;
-    }
-#endif
 
     // Send text
     startTransfer(text);
@@ -522,11 +488,7 @@ void GuiBehind::sendFileComplete(QStringList *files)
 
     // Show completed message
     setMessagePageTitle("Send");
-#ifndef Q_WS_S60
     setMessagePageText("Your data has been sent to your buddy!\n\nDo you want to send other files to your buddy? Just drag and drop them here!");
-#else
-    setMessagePageText("Your data has been sent to your buddy!");
-#endif
     setMessagePageBackState("send");
 
     mView->win7()->setProgressState(EcWin7::NoProgress);
@@ -852,30 +814,3 @@ QString GuiBehind::buddyName()
     return mSettings->buddyName();
 }
 
-#if defined(Q_WS_S60)
-void GuiBehind::initConnection()
-{
-    // Connection
-    QNetworkConfigurationManager manager;
-    const bool canStartIAP = (manager.capabilities() & QNetworkConfigurationManager::CanStartAndStopInterfaces);
-    QNetworkConfiguration cfg = manager.defaultConfiguration();
-    if (!cfg.isValid() || (!canStartIAP && cfg.state() != QNetworkConfiguration::Active)) return;
-    mNetworkSession = new QNetworkSession(cfg, this);
-    connect(mNetworkSession, SIGNAL(opened()), this, SLOT(connectOpened()));
-    connect(mNetworkSession, SIGNAL(error(QNetworkSession::SessionError)), this, SLOT(connectError(QNetworkSession::SessionError)));
-    mNetworkSession->open();
-}
-
-void GuiBehind::connectOpened()
-{
-    mDuktoProtocol.sayHello(QHostAddress::Broadcast);
-}
-
-void GuiBehind::connectError(QNetworkSession::SessionError error)
-{
-    QString msg = "Unable to connecto to the network (code " + QString::number(error) + ").";
-    QMessageBox::critical(NULL, tr("Dukto"), msg);
-    exit(-1);
-}
-
-#endif
