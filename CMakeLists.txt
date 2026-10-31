@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Qt6 6.4 REQUIRED COMPONENTS Core Gui Widgets Network Qml Quick)
 qt_standard_project_setup()
+set(CMAKE_AUTORCC ON)
 
 set(DUKTO_SOURCES
     main.cpp
