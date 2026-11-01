@@ -47,6 +47,7 @@ Rectangle {
         width: parent.width
         x: -50
         opacity: 0
+        visible: opacity > 0
         onBack: parent.state = ""
     }
 
@@ -58,6 +59,7 @@ Rectangle {
         width: parent.width
         x: -50
         opacity: 0
+        visible: opacity > 0
     }
 
     ShowTextPage {
@@ -67,6 +69,7 @@ Rectangle {
         width: parent.width
         x: -50
         opacity: 0
+        visible: opacity > 0
         onBack: parent.state = ""
         onBackOnSend: {
             sendPage.setDestinationFocus();
@@ -80,6 +83,7 @@ Rectangle {
         height: parent.height
         x: -50
         opacity: 0
+        visible: opacity > 0
         onBack: parent.state = ""
     }
 
@@ -91,6 +95,7 @@ Rectangle {
         height: parent.height
         x: -50
         opacity: 0
+        visible: opacity > 0
         onBack: parent.state = ""
         onShowTextPage: {
             showTextPage.setTextEditFocus();
@@ -106,7 +111,8 @@ Rectangle {
         width: parent.width
         x: -50
         opacity: 0
-        onBack: parent.state = backState
+        visible: opacity > 0
+        onBack: function(backState) { parent.state = backState }
     }
 
     TermsPage {
@@ -116,6 +122,7 @@ Rectangle {
         width: parent.width
         x: -50
         opacity: 0
+        visible: opacity > 0
         onOk: {
             guiBehind.showTermsOnStart = false;
             parent.state = ""

@@ -151,8 +151,12 @@ Flipable {
         angle: 0    // the default angle
    }
 
-   ListView.onAdd: NumberAnimation { target: rotation; property: "angle"; from: -90; to: 0; duration: 300; easing.type: Easing.OutCubic }
-   ListView.onRemove: SequentialAnimation {
+   ListView.onAdd: addAnim.start()
+   ListView.onRemove: removeAnim.start()
+
+   NumberAnimation { id: addAnim; target: rotation; property: "angle"; from: -90; to: 0; duration: 300; easing.type: Easing.OutCubic }
+   SequentialAnimation {
+       id: removeAnim
        PropertyAction { target: contactDelegateItem; property: "ListView.delayRemove"; value: true }
        NumberAnimation { target: rotation; property: "angle"; from: 0; to: -90; duration: 300; easing.type: Easing.InCubic }
        PropertyAction { target: contactDelegateItem; property: "ListView.delayRemove"; value: false }

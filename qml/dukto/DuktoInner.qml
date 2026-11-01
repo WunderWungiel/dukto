@@ -35,7 +35,7 @@ Rectangle {
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
-        onClicked: parent.state = tab
+        onClicked: function(tab) { parent.state = tab }
     }
 
     ToolBar {
@@ -43,7 +43,7 @@ Rectangle {
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.right: parent.right
-        onClicked: {
+        onClicked: function(command) {
             if (command == "ip") showIpList();
             if (command == "settings") showSettings();
         }
@@ -57,6 +57,7 @@ Rectangle {
         width: parent.width
         x: 200
         opacity: 0
+        visible: opacity > 0
     }
 
     RecentPage {
@@ -67,6 +68,7 @@ Rectangle {
         width: parent.width
         x: parent.width
         opacity: 0
+        visible: opacity > 0
     }
 
     AboutPage {
@@ -77,6 +79,7 @@ Rectangle {
         width: parent.width
         x: parent.width
         opacity: 0
+        visible: opacity > 0
     }
 
     states: [
