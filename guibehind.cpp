@@ -391,7 +391,10 @@ void GuiBehind::sendScreenStage2() {
     // Salvataggio screenshot in file
     QTemporaryFile tempFile;
     tempFile.setAutoRemove(false);
-    tempFile.open();
+    if (!tempFile.open()) {
+        qWarning() << "Unable to create temporary file for screenshot";
+        return;
+    }
     mScreenTempPath = tempFile.fileName();
     tempFile.close();
     screen.save(mScreenTempPath, "JPG", 95);
